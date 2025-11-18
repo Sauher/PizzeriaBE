@@ -65,3 +65,6 @@ Content-Type: application/json
 GET {{url}}/users/name/eq/béla
 Content-Type: application/json
 
+### (Pizza)
+GET {{url}}/order_items/pizza_id/3
+Content-Type: application/json

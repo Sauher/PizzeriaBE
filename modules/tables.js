@@ -47,6 +47,20 @@ router.get('/:table/:id',(req,res)=>{
     }, req);
 })
 
+// Select one pizza with user_Id
+router.get('/:table/:column/:id',(req,res)=>{
+    const table = req.params.table;
+    const column = req.params.column
+    const order_id = req.params.id
+    //SELECT pizza_id FROM `order_items` WHERE  order_id = 4
+    query(`SELECT ${column} FROM ${table} WHERE order_id=?`, [order_id], (error, results) =>{
+        if (error) throw res.status(500).json({error:error.message});
+        res.status(200).json(results)
+    }, req);
+})
+//
+//SELECT * FROM `pizzas` WHERE id = 16;
+
 //SELECT RECORDS FROM TABLE by field
 router.get('/:table/:field/:op/:value', (req, res) => {
     let table = req.params.table;
@@ -93,6 +107,10 @@ router.post('/:table/login',(req,res)=>{
         if(results.length == 0){
             res.status(400).send({error: 'Hibás belépési adatok!'})
             return;
+        }
+        if(results[0].status == 0){
+            res.status(400).send({error: 'Inaktív felhasználó!'})
+            return
         }
         res.status(200).json(results)
     }, req);
