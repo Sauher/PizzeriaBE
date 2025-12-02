@@ -236,15 +236,33 @@ router.delete('/image/:filename',(req,res) => {
 })
 
 
+
 // DELETE one record from table by : id
-router.get('/:table/:id',(req,res)=>{
+router.delete('/:table/:id',(req,res)=>{
     const table = req.params.table;
     const id = req.params.id
-    query(`DELETE * FROM ${table} WHERE id=?`, [id], (error, results) =>{
+    query(`DELETE FROM ${table} WHERE id=?`, [id], (error, results) =>{
         if (error) throw res.status(500).json({error:error.message});
         res.status(200).json(results)
     }, req);
 })
+router.delete('/:table/:field/:op/:value', (req, res) => {
+    let table = req.params.table;
+    let field = req.params.field;
+    let op = getOP(req.params.op);
+    let value = req.params.value;
+ 
+    if (req.params.op == 'lk') {
+        value = `%${value}%`;
+    }
+ 
+    query(`DELETE FROM ${table} WHERE ${field}${op}?`, [value], (error, results) => {
+        if (error) return res.status(500).json({ error: error.message });
+        res.status(200).json(results);
+    }, req);
+ 
+});
+
 
 
 
